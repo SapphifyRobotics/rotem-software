@@ -35,6 +35,7 @@ export function drawHorizon(
   rollDeg: number,
   pitchDeg: number,
 ) {
+  if (c.clientWidth <= 16 || c.clientHeight <= 16) return;
   const { g, w, h, r } = prep(c);
   g.save();
   g.translate(w / 2, h / 2);
@@ -85,6 +86,7 @@ export function drawHorizon(
 }
 
 export function drawCompass(c: HTMLCanvasElement, headingDeg: number) {
+  if (c.clientWidth <= 16 || c.clientHeight <= 16) return;
   const { g, w, h, r } = prep(c);
   g.save();
   g.translate(w / 2, h / 2);

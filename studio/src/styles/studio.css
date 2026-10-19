@@ -1457,3 +1457,5 @@ a.cta {
 .choice-options {display:flex;flex-wrap:wrap;gap:5px;min-width:0}
 .choice-options button {border-radius:5px;padding:8px 12px;font-size:12px;white-space:normal}
 .choice-options button[aria-pressed="true"] {background:var(--accent);color:var(--accent-ink)}
+
+body.dark .instruments canvas {background:#eee9dc;border-radius:50%}
