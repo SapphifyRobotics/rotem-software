@@ -18,8 +18,50 @@ export function enhanceSelects(root: ParentNode = document) {
     .forEach(enhance);
 }
 
+function accessibleName(sel: HTMLSelectElement) {
+  const label = sel.labels?.[0]?.cloneNode(true) as HTMLElement | undefined;
+  label?.querySelectorAll("select, button").forEach(node => node.remove());
+  return sel.getAttribute("aria-label") || label?.textContent?.trim() || sel.id || "Choose option";
+}
+
+function segmented(sel: HTMLSelectElement) {
+  const wrap = document.createElement("div");
+  wrap.className = "choice-options";
+  wrap.setAttribute("role", "group");
+  wrap.setAttribute("aria-label", accessibleName(sel));
+  sel.after(wrap);
+  sel.hidden = true;
+  sel.tabIndex = -1;
+  const buttons = Array.from(sel.options, option => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = option.textContent;
+    button.onclick = () => {
+      sel.value = option.value;
+      sel.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+    wrap.append(button);
+    return button;
+  });
+  const sync = () => buttons.forEach((button, index) => {
+    button.setAttribute("aria-pressed", String(sel.selectedIndex === index));
+    button.disabled = sel.disabled || sel.options[index].disabled;
+  });
+  Object.defineProperty(sel, "value", {
+    get() { return valueDesc.get!.call(sel); },
+    set(value) { valueDesc.set!.call(sel, value); sync(); },
+  });
+  Object.defineProperty(sel, "disabled", {
+    get() { return disabledDesc.get!.call(sel); },
+    set(value) { disabledDesc.set!.call(sel, value); sync(); },
+  });
+  sel.addEventListener("change", sync);
+  sync();
+}
+
 function enhance(sel: HTMLSelectElement) {
   sel.dataset.enhanced = "1";
+  if (sel.options.length <= 4) { segmented(sel); return; }
   const wrap = document.createElement("div");
   wrap.className = "sel";
   const btn = document.createElement("button");
@@ -28,13 +70,7 @@ function enhance(sel: HTMLSelectElement) {
   btn.setAttribute("aria-haspopup", "listbox");
   btn.setAttribute("role", "combobox");
   btn.setAttribute("aria-expanded", "false");
-  btn.setAttribute(
-    "aria-label",
-    sel.getAttribute("aria-label") ||
-      sel.labels?.[0]?.textContent?.trim() ||
-      sel.id ||
-      "Choose option",
-  );
+  btn.setAttribute("aria-label", accessibleName(sel));
   const menuId = "options-" + (sel.id || Math.random().toString(36).slice(2));
   btn.setAttribute("aria-controls", menuId);
   const label = document.createElement("span");

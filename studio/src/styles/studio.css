@@ -1453,3 +1453,7 @@ a.cta {
   .stagebar button { font-size: 11px; padding: 8px; }
   .cfgrow { grid-template-columns: minmax(0, 1fr); gap: 6px; }
 }
+
+.choice-options {display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.choice-options button {border-radius:5px;padding:8px 12px;font-size:12px;white-space:normal}
+.choice-options button[aria-pressed="true"] {background:var(--accent);color:var(--accent-ink)}
