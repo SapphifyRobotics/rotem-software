@@ -7,5 +7,5 @@ export default defineConfig({
   output: 'static',
   devToolbar: { enabled: false },
   server: { port: 4321, host: '127.0.0.1' },
-  integrations: [rotemHub()],
+  integrations: process.env.STUDIO_VISUAL_PREVIEW === '1' ? [] : [rotemHub()],
 });

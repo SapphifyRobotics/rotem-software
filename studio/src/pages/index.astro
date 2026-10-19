@@ -2,6 +2,8 @@
 import '@fontsource-variable/dm-sans';
 import '@fontsource-variable/space-grotesk';
 import '../styles/studio.css';
+import '../styles/corporate.css';
+import ReferenceGuide from '../components/ReferenceGuide.astro';
 
 const tabs = [
   ['overview', 'Overview', ''],
@@ -32,7 +34,7 @@ const tabs = [
     <nav class="nav" aria-label="Sections">
       {tabs.map(([id, label, cls], i) => <button data-tab={id} class={[i === 0 ? 'on' : '', cls].join(' ')}>{label}</button>)}
     </nav>
-    <div class="side-foot"><a class="docs-link" href="https://docs.sapphify.com/rotem">Product lab ↗</a><a class="docs-link" href="https://store.sapphify.com/rotem">ROTEM hardware ↗</a><button id="theme-toggle" class="small">Dark appearance</button>
+    <div class="side-foot"><a class="docs-link" href="https://docs.sapphify.com/rotem">Documentation ↗</a><a class="docs-link" href="https://store.sapphify.com/rotem">ROTEM hardware ↗</a><button id="theme-toggle" class="small">Dark appearance</button>
       <div class="devcard">
         <div class="devrow"><span class="dot" id="linkdot"></span><b id="devname">No device</b></div>
         <div class="devsub" id="devsub">Connect a ROTEM over USB</div>
@@ -46,7 +48,7 @@ const tabs = [
     <header class="head">
       <div>
         <div class="eyebrow" id="eyebrow">YOUR ROTEM</div>
-        <h1 id="title">Your workbench.</h1>
+        <h1 id="title">Device overview</h1>
       </div>
       <div class="head-right">
         <span class="pill" id="health">Offline</span>
@@ -64,7 +66,7 @@ const tabs = [
       <div class="stage">
         <div class="stage-head">
           <div>
-            <h2>Motion, in view.</h2>
+            <h2>Orientation</h2>
             <p id="filterline">Simplified display model. <span class="chip" id="filterchip">Kalman · 6-axis</span> <span class="chip still" id="stillchip" hidden>still</span></p>
           </div>
           <div class="instruments">
@@ -77,8 +79,8 @@ const tabs = [
           <button data-view="board" class="on">Inside</button><button data-view="enclosure">Enclosed</button>
         </div>
         <div class="stagebar">
-          <button id="zero" class="ghost">Level here</button>
-          <button id="unzero" class="ghost">True pose</button>
+          <button id="zero" class="ghost">Set reference</button>
+          <button id="unzero" class="ghost">Clear reference</button>
           <button id="camreset" class="ghost">Reset view</button>
         </div>
         <p id="nogl" class="glnote" hidden>3D is off in this browser (WebGL disabled, see chrome://gpu). A simple view is shown.</p>
@@ -99,12 +101,12 @@ const tabs = [
             </div>
           </div>
 
-          <h3>Get set up <span class="muted small-note" id="setup-count"></span></h3>
+          <h3>Next steps <span class="muted small-note" id="setup-count"></span></h3>
           <ol class="steps" id="steps">
             <li data-step="connect"><span class="st"></span><div><b>Connect the board</b><p>USB-C to this computer. Nothing to install.</p></div></li>
             <li data-step="health"><span class="st"></span><div><b>Board checks pass</b><p>Sensors, power and data are checked automatically.</p></div></li>
-            <li data-step="gyro"><span class="st"></span><div><b>Teach it to sit still</b><p>Three seconds on the table, so it learns the gyro's drift.</p></div><button class="small go" data-go="cal-gyro">Do it</button></li>
-            <li data-step="mag"><span class="st"></span><div><b>Point it at north</b><p>Turn it around for thirty seconds then check the result away from magnetic interference.</p></div><button class="small go" data-go="cal-mag">Do it</button></li>
+            <li data-step="gyro"><span class="st"></span><div><b>Calibrate the gyroscope</b><p>Three seconds on the table, so it learns the gyro's drift.</p></div><button class="small go" data-go="cal-gyro">Calibrate</button></li>
+            <li data-step="mag"><span class="st"></span><div><b>Calibrate the compass</b><p>Turn it around for thirty seconds then check the result away from magnetic interference.</p></div><button class="small go" data-go="cal-mag">Calibrate</button></li>
           </ol>
 
           <h3>Health <button id="selftest" class="small">Check again</button></h3>
@@ -221,10 +223,10 @@ const tabs = [
         </div>
 
                 <div class="tab" id="tab-cal">
-          <p class="note lead">Two short steps make ROTEM exact. Each result is stored on the board, so you do them once.</p>
+          <p class="note lead">Measure gyroscope bias and magnetometer calibration separately. Review each result before saving it to the board. Recheck calibration after changes to mounting or magnetic surroundings.</p>
 
           <section class="wiz" id="wiz-gyro">
-            <div class="wiz-head"><span class="wiz-n">1</span><div><b>Sit still</b><p>Put the board flat on a table that nobody is touching. Press start and don't touch it for three seconds.</p></div><span class="wiz-state" id="gyro-state"></span></div>
+            <div class="wiz-head"><span class="wiz-n">1</span><div><b>Sit still</b><p>Place the enclosure on a stable, non-metallic table, component side up. Support a bare board on non-conductive spacers. Keep the cable slack. Press Start and keep it still for three seconds.</p></div><span class="wiz-state" id="gyro-state"></span></div>
             <div class="wiz-body">
               <div class="ring" id="cal-gyro-ring"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="ring-bg"/><circle cx="20" cy="20" r="17" class="ring-fg" id="gyro-ring-fg"/></svg><span id="gyro-ring-t">3</span></div>
               <div class="wiz-res">
@@ -262,6 +264,7 @@ const tabs = [
       </div>
     </section>
   </main>
+  <ReferenceGuide />
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="pop" id="pop" hidden></div>
   <script>import '../main.ts';</script>

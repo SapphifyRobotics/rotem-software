@@ -1,5 +1,4 @@
-/* ROTEM Studio: a SAPPHIFY product in the Little Small Stuff design language (paper ground, dark shell,
-   Space Grotesk headings, DM Sans text, rounded cards), recoloured in sapphire. */
+/* ROTEM Studio base layout and device controls. Brand presentation lives in corporate.css. */
 :root {
   --bg: #f6f8fc;
   --ink: #0f172a;
@@ -1279,48 +1278,6 @@ body:not(.simple) .simple-only {
   }
 }
 
-/* Product Lab shared palette */
-:root {
-  --bg: #f5f1e6;
-  --ink: #292b23;
-  --muted: #66685b;
-  --line: #ddd9cd;
-  --card: #fffdf6;
-  --panel: #eae6d9;
-  --accent: #b5471e;
-  --accent-ink: #fffaf1;
-  --accent-tint: #f5e0ce;
-  --shell: #eeebdf;
-  --shell-ink: #292b23;
-  --shell-muted: #69695e;
-  --shell-line: #d9d6c9;
-  --shell-hi: #e5e0d1;
-  --stage: #eae4d6;
-  --stage-ink: #282b21;
-  --stage-muted: #626657;
-  --glass: #fffcf0d9;
-  --shadow: 0 3px 12px #30291405;
-}
-body.dark {
-  --bg: #22241e;
-  --ink: #f4eedf;
-  --muted: #c0bcaf;
-  --line: #45483c;
-  --card: #2c2f26;
-  --panel: #363a2f;
-  --accent: #ffae80;
-  --accent-ink: #242018;
-  --accent-tint: #533a27;
-  --shell: #272a22;
-  --shell-ink: #f4eedf;
-  --shell-muted: #c0bcaf;
-  --shell-line: #45483c;
-  --shell-hi: #363a2f;
-  --stage: #33372b;
-  --stage-ink: #f4eedf;
-  --stage-muted: #c0bcaf;
-  --glass: #2c2f26e6;
-}
 .docs-link {
   font-size: 12px;
   color: var(--shell-ink);
@@ -1335,7 +1292,7 @@ body.dark {
   letter-spacing: -0.06em;
 }
 .stat:first-child {
-  border-top: 3px solid #cd6735;
+  border-top: 3px solid var(--accent);
 }
 .empty {
   background: transparent;
@@ -1436,8 +1393,8 @@ a.cta {
   border-radius: 5px;
 }
 .rate-options button[aria-pressed="true"] {
-  background: #d26c38;
-  color: #211c16;
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 
 @media (max-width: 800px) {

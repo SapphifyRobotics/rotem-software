@@ -1,0 +1,49 @@
+@import '@sapphify/ui/tokens.css';
+/* SAPPHIFY corporate visual layer. Device behavior and layout remain in studio.css. */
+ :root {
+ --shadow:0 1px 3px rgb(20 40 70 / 3%);
+ --stage:radial-gradient(ellipse at 50% 40%,var(--sf-surface),var(--sf-panel));
+ --stage-ink:var(--sf-ink); --stage-muted:var(--sf-muted);
+ --glass:color-mix(in srgb,var(--sf-surface) 92%,transparent);
+}
+body:not(.dark) .side { background: var(--sf-surface); }
+.main { padding: 28px 3% 32px; }
+h1 { font-size: 30px; letter-spacing: -.9px; line-height: 1.2; }
+h2 { font-size: 18px; letter-spacing: -.3px; }
+.eyebrow { letter-spacing: .08em; }
+.product { font-size: 19px; letter-spacing: -.4px; }
+button, .modes, .modes button, .nav button, .seg, .seg button { border-radius: 7px; }
+.stat, .card, .stage { border-radius: 10px; }
+.stat { padding: 16px 20px; box-shadow: none; }
+.stat b { font-size: 34px; font-weight: 500; }
+.stat .label { font-weight: 600; color: var(--ink); }
+.stats { gap: 12px; margin-top: 24px; }
+.stage-head { padding: 22px; }
+.stage { min-height: 530px; }
+.card { box-shadow: none; }
+.hero { border-radius: 7px; }
+.nav button.on { box-shadow: inset 3px 0 var(--accent); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 800px) {
+  .main { padding: 20px 16px; }
+  h1 { font-size: 26px; }
+  .stage { min-height: 440px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0s !important; } }
+
+/* Framework adapter: all palette and typography values come from @sapphify/ui. */
+:root, body.dark {
+ --bg:var(--sf-bg); --ink:var(--sf-ink); --muted:var(--sf-muted);
+ --card:var(--sf-surface); --panel:var(--sf-panel); --line:var(--sf-line);
+ --accent:var(--sf-accent); --accent-soft:var(--sf-accent); --accent-ink:var(--sf-on-accent); --accent-tint:var(--sf-accent-tint);
+ --shell:var(--sf-surface); --shell-ink:var(--sf-ink); --shell-muted:var(--sf-muted);
+ --shell-line:var(--sf-line); --shell-hi:var(--sf-accent-tint);
+ --head:var(--sf-font); --body:var(--sf-font); --mono:var(--sf-font-mono);
+}
+/* Re-evaluate derived tokens at the element carrying the dark theme. */
+body.dark {
+ --stage:radial-gradient(ellipse at 50% 40%,var(--sf-panel),var(--sf-bg));
+ --stage-ink:var(--sf-ink); --stage-muted:var(--sf-muted);
+ --glass:color-mix(in srgb,var(--sf-surface) 92%,transparent);
+}
+body.dark .nav button.on, body.dark .modes button.on {background:var(--sf-accent-tint);color:var(--sf-ink)}

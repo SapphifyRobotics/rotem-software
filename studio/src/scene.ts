@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { sensorToDisplayQuaternion, CAD_TO_DISPLAY_X } from "./orientation";
 export type ViewMode = "board" | "plugs" | "enclosure";
 /** Public display geometry only. Sensor coordinates: X right, Y toward USB, Z up. */
 export class BoardView {
@@ -36,12 +37,14 @@ export class BoardView {
     ).matches;
     this.controls.minDistance = 2;
     this.controls.maxDistance = 8;
-    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x8c7b66, 2.4));
-    const light = new THREE.DirectionalLight(0xfff3df, 3);
+    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x667b96, 2.4));
+    const light = new THREE.DirectionalLight(0xf5f8ff, 3);
     light.position.set(2, 4, 3);
     this.scene.add(light);
     this.scene.add(this.holder);
-    this.holder.add(new THREE.AxesHelper(1.5));
+    const axes = new THREE.AxesHelper(1.5);
+    axes.rotation.x = CAD_TO_DISPLAY_X;
+    this.holder.add(axes);
     this.resetCamera();
     this.loaded = Promise.all(
       ["interior", "assembled"].map(async (name) => {
@@ -55,6 +58,8 @@ export class BoardView {
         object.scale.setScalar(scale);
         const group = new THREE.Group();
         group.add(object);
+        // The public meshes are authored in CAD Z-up, not glTF Y-up.
+        group.rotation.x = CAD_TO_DISPLAY_X;
         group.visible = name === "interior";
         this.holder.add(group);
         this.models.set(name, group);
@@ -98,7 +103,9 @@ export class BoardView {
     return this.mode;
   }
   setOrientation(q: number[]) {
-    this.current.set(q[1], q[3], -q[2], q[0]);
+    const display = sensorToDisplayQuaternion(q);
+    if (!display) return;
+    this.current.set(...display);
     this.holder.quaternion.copy(this.tare).multiply(this.current);
   }
   zero() {
@@ -107,6 +114,7 @@ export class BoardView {
   }
   unzero() {
     this.tare.identity();
+    this.holder.quaternion.copy(this.current);
   }
   resetCamera() {
     this.camera.position.set(2.6, 2.6, 3.3);

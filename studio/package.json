@@ -15,6 +15,7 @@
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",
+    "@sapphify/ui": "file:../packages/ui",
     "astro": "^7.3.5",
     "serialport": "^13.0.0",
     "three": "^0.186.1",

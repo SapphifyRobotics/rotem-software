@@ -206,14 +206,14 @@ function log(s: string) {
 
 // ---------- tabs
 const TITLES: Record<string, [string, string]> = {
-  overview: ["YOUR ROTEM", "Your workbench."],
-  live: ["RAW SENSORS", "Every little movement."],
-  device: ["STORED ON THE BOARD", "Make it yours."],
-  filter: ["SENSOR FUSION", "Many readings, one answer."],
-  cal: ["CALIBRATION", "True to the table."],
-  console: ["LINE PROTOCOL", "Talk to it directly."],
-  can: ["CLASSIC CAN", "Connect your robot."],
-  firmware: ["FIRMWARE", "Know what is running."],
+  overview: ["YOUR ROTEM", "Device overview"],
+  live: ["RAW SENSORS", "Sensor measurements"],
+  device: ["STORED ON THE BOARD", "Board settings"],
+  filter: ["SENSOR FUSION", "Sensor fusion"],
+  cal: ["CALIBRATION", "Sensor calibration"],
+  console: ["LINE PROTOCOL", "Device console"],
+  can: ["CLASSIC CAN", "CAN configuration"],
+  firmware: ["FIRMWARE", "Firmware & recovery"],
 };
 function showTab(name: string) {
   if (!TITLES[name]) name = "overview";
@@ -381,7 +381,9 @@ function onSample(s: Sample) {
   const g = gyro.map((v) => v * D2R);
   if (prefs.algo === "ekf") ekf.update(g, s.accel, magOn ? mag : null, dt);
   else madgwick.update(g, s.accel, magOn ? mag : null, dt);
+  const previousFusionMode = boardFusion ? boardFusion.flags & 4 : null;
   boardFusion = s.board ?? null;
+  if (previousFusionMode !== (boardFusion ? boardFusion.flags & 4 : null)) renderFusion();
   view.setOrientation(
     useBoard() ? boardFusion!.q : prefs.algo === "ekf" ? ekf.q : madgwick.q,
   );
@@ -1352,7 +1354,21 @@ $("cal-mag-save").onclick = async () => {
 };
 
 // ---------- view buttons, console
-$("zero").onclick = () => view.zero();
+const referenceGuide = $<HTMLDialogElement>("reference-guide");
+$("zero").onclick = () => {
+  $("reference-feedback").textContent = "";
+  referenceGuide.showModal();
+};
+$("reference-calibration").onclick = () => { referenceGuide.close(); showTab("cal"); };
+$("reference-confirm").onclick = () => {
+  if (!last || performance.now() - lastArrival > 2000) {
+    $("reference-feedback").textContent = "Connect the board and wait for fresh readings first.";
+    return;
+  }
+  view.zero();
+  referenceGuide.close();
+  toast("Display reference set. Sensor readings are unchanged.");
+};
 $("unzero").onclick = () => view.unzero();
 $("camreset").onclick = () => view.resetCamera();
 $("selftest").onclick = async () => {

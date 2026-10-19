@@ -1,0 +1,19 @@
+<dialog id="reference-guide" aria-labelledby="reference-title">
+  <form method="dialog"><button class="reference-close" aria-label="Close reference guide">×</button></form>
+  <p class="eyebrow">DISPLAY REFERENCE</p><h2 id="reference-title">Start from a known position</h2>
+  <ol>
+    <li><b>Place it flat.</b> Put the enclosure on a stable, non-metallic table. Keep the component side up. Support a bare board on non-conductive spacers.</li>
+    <li><b>Choose a repeatable direction.</b> For this setup, point USB-C toward you. Keep the cable loose so it does not tilt the board.</li>
+    <li><b>Keep it still.</b> If needed, use Calibration to measure gyroscope bias first, then return here.</li>
+    <li><b>Set the display reference.</b> The model will treat this pose as its starting orientation. Then tilt one axis at a time to check the response.</li>
+  </ol>
+  <p class="note">This changes only the 3D view for this session. Numeric sensor readings stay absolute to their existing frame. It does not calibrate the sensors, detect the USB direction, or establish magnetic north.</p>
+  <p id="reference-feedback" role="status"></p>
+  <div class="actions"><button id="reference-calibration">Open calibration</button><button id="reference-confirm" class="accent">Use this pose</button></div>
+</dialog>
+<style>
+ dialog { width:min(560px,calc(100vw - 32px)); padding:28px; border:1px solid var(--line); border-radius:var(--sf-radius); background:var(--card); color:var(--ink); box-shadow:0 24px 80px #10203030; }
+ dialog::backdrop {background:#12223870;backdrop-filter:blur(3px)}
+ .reference-close {float:right;font-size:22px;padding:2px 10px}
+ ol {padding-left:22px;line-height:1.65} li {padding:7px 0} .note {color:var(--muted);font-size:13px}
+</style>

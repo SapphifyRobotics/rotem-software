@@ -1,0 +1,29 @@
+/* Single source for SAPPHIFY visual primitives. App adapters map these into framework tokens. */
+:root {
+ --sf-font: 'DM Sans Variable', 'DM Sans', system-ui, sans-serif;
+ --sf-font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+ --sf-bg: #f5f7fa;
+ --sf-surface: #ffffff;
+ --sf-ink: #172338;
+ --sf-muted: #627187;
+ --sf-line: #dfe5ee;
+ --sf-panel: #edf2f8;
+ --sf-accent: #254f9e;
+ --sf-on-accent: #ffffff;
+ --sf-accent-tint: #edf3fc;
+ --sf-radius: 8px;
+ --sf-text-sm: .8125rem;
+ --sf-text-base: 1rem;
+ --sf-leading: 1.65;
+}
+:root[data-theme='dark'], body.dark {
+ --sf-bg: #111925;
+ --sf-surface: #1b2737;
+ --sf-ink: #eaf0f8;
+ --sf-muted: #a5b3c7;
+ --sf-line: #334154;
+ --sf-panel: #233249;
+ --sf-accent: #8fb8ff;
+ --sf-on-accent: #101d33;
+ --sf-accent-tint: #263d60;
+}
