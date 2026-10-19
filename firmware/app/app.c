@@ -228,7 +228,7 @@ static void set_command(const char *arg)
     #undef KEY
     if (next.rate_hz > next.odr_hz) { put("ERR rate_hz above odr_hz\n"); return; }
     bool can_changed = next.can_kbps != config.can_kbps || next.can_node != config.can_node;
-    config = next; apply_config(); cfg_line();
+    config = next; can_node = config.can_node; apply_config(); cfg_line();
     if (can_changed && requested_can) {
         can_node = config.can_node; requested_can_kbps = config.can_kbps;
         if (optional_loads_ready) can_start(requested_can_kbps, requested_can_fd, requested_can_hse);
@@ -262,6 +262,7 @@ static void can_command(const char *a)
         const char *pp = strstr(p, "P"); force_presc = 0;
         if (pp && pp[1] >= '1' && pp[1] <= '9') force_presc = (unsigned)(pp[1] - '0');
         if (!k) k = 500;
+        can_node = config.can_node;
         if (!can_start(k, fd, hse)) { put("ERR can start (bitrate 125 250 500 1000)\n"); return; }
         requested_can = true; requested_can_kbps = k;
         requested_can_fd = fd; requested_can_hse = hse;

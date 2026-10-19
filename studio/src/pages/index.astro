@@ -84,7 +84,7 @@ const tabs = [
         <p id="nogl" class="glnote" hidden>3D is off in this browser (WebGL disabled, see chrome://gpu). A simple view is shown.</p>
         <div id="empty" class="empty">
           <h3>Plug in your ROTEM.</h3>
-          <p>It appears here by itself when the hub is running. Otherwise press <b>Connect</b> and choose ROTEM.</p>
+          <p>Press <b>Connect</b> and choose ROTEM.</p>
           <p class="note" id="unsupported" hidden>This browser has no Web Serial. Use Chrome or Edge, or run the hub.</p>
         </div>
       </div>
@@ -95,7 +95,7 @@ const tabs = [
             <div class="hero-ic" id="hero-ic">·</div>
             <div>
               <div class="hero-title" id="hero-title">Plug in your ROTEM</div>
-              <div class="hero-sub" id="hero-sub">Connect it with a USB-C cable. It appears here by itself.</div>
+              <div class="hero-sub" id="hero-sub">Connect with a USB-C data cable, then choose Connect.</div>
             </div>
           </div>
 
@@ -115,8 +115,8 @@ const tabs = [
         <div class="tab" id="tab-can">
 <h3>CAN configuration</h3><p class="note">C1 high-rate CAN is not qualified. Confirm wiring and termination before starting the bus. Each board needs a unique node ID.</p>
 <label>Node ID <input id="can-node" type="number" min="0" max="63" value="0" /></label>
-<label>Bitrate <select id="can-kbps"><option>125</option><option>250</option><option>500</option><option>1000</option></select> kbit/s</label>
-<div class="actions"><button id="can-apply">Apply &amp; read back</button><button id="can-save">Save settings</button><button id="can-status">Read status</button><button id="can-stop">Stop bus</button></div>
+<p class="note">Bitrate (kbit/s)</p><input id="can-kbps" type="hidden" value="125"/><div class="rate-options" role="group" aria-label="CAN bitrate">{[125,250,500,1000].map(rate => <button data-can-rate={rate} aria-pressed={rate===125}>{rate}</button>)}</div>
+<div class="actions"><button id="can-apply">Apply &amp; read back</button><button id="can-save">Save settings</button><button id="can-status">Read status</button><button id="can-start">Start bus</button><button id="can-stop">Stop bus</button></div>
 <pre id="can-result" aria-live="polite">Connect to inspect the bus.</pre>
 </div>
 <div class="tab" id="tab-firmware"><h3>Firmware &amp; recovery</h3><p>Experimental device software. Check the board revision and release manifest before writing firmware.</p><ol><li>Export your settings in Board settings.</li><li>Check the compatible release and SHA-256.</li><li>Use the documented DFU procedure with a backup and readback.</li></ol><a class="cta accent" href="https://docs.sapphify.com/rotem/firmware">Open update guide ↗</a><p class="note">Automatic browser flashing is not available. Entering DFU is not a completed update.</p></div>

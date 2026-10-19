@@ -1,4 +1,4 @@
-const local = new Set(['localhost', '127.0.0.1', '[::1]']);
+const local = new Set(["localhost", "127.0.0.1", "[::1]"]);
 export function allowedRequest(req, requireOrigin = true) {
   try {
     const host = new URL(`http://${req.headers.host}`);
@@ -6,6 +6,8 @@ export function allowedRequest(req, requireOrigin = true) {
     const origin = req.headers.origin;
     if (!origin) return !requireOrigin;
     const parsed = new URL(origin);
-    return parsed.protocol === 'http:' && parsed.host === host.host;
-  } catch { return false; }
+    return parsed.protocol === "http:" && parsed.host === host.host;
+  } catch {
+    return false;
+  }
 }
