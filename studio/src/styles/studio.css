@@ -1439,3 +1439,17 @@ a.cta {
   background: #d26c38;
   color: #211c16;
 }
+
+@media (max-width: 800px) {
+  body { grid-template-columns: minmax(0, 1fr); }
+  .side, .main, .work, .card, .stats, .stage { min-width: 0; }
+  .side-foot { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .side-foot .devcard { grid-column: 1 / -1; }
+  .side-foot .cta { width: 100%; }
+  .nav { max-width: 100%; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat { min-width: 0; padding: 16px; }
+  .stagebar { gap: 4px; flex-wrap: wrap; }
+  .stagebar button { font-size: 11px; padding: 8px; }
+  .cfgrow { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+}
