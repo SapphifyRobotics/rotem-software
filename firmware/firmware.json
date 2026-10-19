@@ -1,0 +1,13 @@
+{
+  "app": {
+    "version": "0.6.4",
+    "path": "app",
+    "usb": "cafe:4010",
+    "protocol": "../protocol/wire-0.6.md",
+    "settings": "flash, last 8 KiB page (config.c)",
+    "independent": "fusion and calibration from power-up; automatic CAN subject to the 0.6.2 optional-load policy (interfaces.md)"
+  },
+  "toolchain": "arm-none-eabi-gcc 7-2017q4 (Arduino package), dfu-util 0.11.0-arduino5; hard float (fpv5-sp-d16)",
+  "vendor": "vendor/ source hashes and original licenses",
+  "verified": "0.6.4 is a software-tested candidate, not flashed. Prior bench results do not qualify this release. See COMPATIBILITY.md."
+}

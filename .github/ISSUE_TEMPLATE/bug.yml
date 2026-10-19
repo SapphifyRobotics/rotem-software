@@ -1,0 +1,21 @@
+name: Bug report
+description: Help us reproduce a software or device problem
+body:
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions and setup
+      description: Hardware revision, firmware commit, Studio/SDK versions. No serial numbers.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps, expected result, actual result
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Redacted evidence
+      description: State whether this is a physical test or simulation.

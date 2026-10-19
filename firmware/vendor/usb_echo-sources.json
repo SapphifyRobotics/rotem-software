@@ -1,0 +1,6 @@
+{
+  "tinyusb": "42138394dcc3a829015fa8b6e62e6968cc7d3a97",
+  "stm32_startup": "https://github.com/STMicroelectronics/cmsis-device-u5/blob/main/Source/Templates/gcc/startup_stm32u575xx.s",
+  "cmsis": "Shared pinned headers/system source in ../led_bringup/vendor",
+  "stm32_startup_sha256": "70e9034f2243394d0c7b815ca59c6ce3363a120e25efbcdf13bcda59d356b197"
+}

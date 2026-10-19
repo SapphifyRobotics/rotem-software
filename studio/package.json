@@ -1,0 +1,30 @@
+{
+  "name": "rotem-studio",
+  "private": true,
+  "version": "0.9.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "start": "astro build && node server/hub.mjs",
+    "hub": "node server/hub.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "astro": "^7.3.5",
+    "serialport": "^13.0.0",
+    "three": "^0.186.1",
+    "ws": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.186.0",
+    "@types/w3c-web-serial": "^1.0.8",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
+  }
+}

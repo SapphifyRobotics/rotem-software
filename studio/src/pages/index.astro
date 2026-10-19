@@ -1,0 +1,269 @@
+---
+import '@fontsource-variable/dm-sans';
+import '@fontsource-variable/space-grotesk';
+import '../styles/studio.css';
+
+const tabs = [
+  ['overview', 'Overview', ''],
+  ['device', 'Board settings', ''],
+  ['cal', 'Calibration', ''],
+  ['can', 'CAN bus', ''],
+  ['firmware', 'Firmware', ''],
+  ['live', 'Live data', 'adv'],
+  ['filter', 'Fusion', 'adv'],
+  ['console', 'Console', 'adv'],
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ROTEM Studio</title>
+  <meta name="description" content="See and set up a ROTEM orientation sensor over USB." />
+</head>
+<body>
+  <aside class="side">
+    <div class="brand"><span class="logo" role="img" aria-label="SAPPHIFY"></span></div>
+    <div class="product">ROTEM <span>Studio</span></div>
+    <div class="modes" role="group" aria-label="Mode">
+      <button data-mode="simple" class="on">Simple</button><button data-mode="advanced">Advanced</button>
+    </div>
+    <nav class="nav" aria-label="Sections">
+      {tabs.map(([id, label, cls], i) => <button data-tab={id} class={[i === 0 ? 'on' : '', cls].join(' ')}>{label}</button>)}
+    </nav>
+    <div class="side-foot"><a class="docs-link" href="https://docs.sapphify.com/rotem">Product lab ↗</a><a class="docs-link" href="https://store.sapphify.com/rotem">ROTEM hardware ↗</a><button id="theme-toggle" class="small">Dark appearance</button>
+      <div class="devcard">
+        <div class="devrow"><span class="dot" id="linkdot"></span><b id="devname">No device</b></div>
+        <div class="devsub" id="devsub">Connect a ROTEM over USB</div>
+      </div>
+      <button id="connect" class="cta accent">Connect</button>
+      <div class="ver">Studio <span id="appver"></span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="head">
+      <div>
+        <div class="eyebrow" id="eyebrow">YOUR ROTEM</div>
+        <h1 id="title">Your workbench.</h1>
+      </div>
+      <div class="head-right">
+        <span class="pill" id="health">Offline</span>
+      </div>
+    </header>
+
+    <section class="stats">
+      <div class="stat"><span class="label">Roll</span><b id="roll">–</b><i id="sroll">left and right tilt</i></div>
+      <div class="stat"><span class="label">Pitch</span><b id="pitch">–</b><i id="spitch">nose up and down</i></div>
+      <div class="stat"><span class="label">Heading</span><b id="yaw">–</b><i id="syaw">turn about vertical</i></div>
+      <div class="stat"><span class="label">Stream</span><b id="sb-rate">–</b><i><span id="sb-lost"></span> <span id="sb-temp"></span> <span id="sb-up"></span></i></div>
+    </section>
+
+    <section class="work">
+      <div class="stage">
+        <div class="stage-head">
+          <div>
+            <h2>Motion, in view.</h2>
+            <p id="filterline">Simplified display model. <span class="chip" id="filterchip">Kalman · 6-axis</span> <span class="chip still" id="stillchip" hidden>still</span></p>
+          </div>
+          <div class="instruments">
+            <canvas id="horizon" title="Artificial horizon"></canvas>
+            <canvas id="compass" title="Heading"></canvas>
+          </div>
+        </div>
+        <div id="board"></div>
+        <div class="seg viewmodes" role="group" aria-label="What to show">
+          <button data-view="board" class="on">Inside</button><button data-view="enclosure">Enclosed</button>
+        </div>
+        <div class="stagebar">
+          <button id="zero" class="ghost">Level here</button>
+          <button id="unzero" class="ghost">True pose</button>
+          <button id="camreset" class="ghost">Reset view</button>
+        </div>
+        <p id="nogl" class="glnote" hidden>3D is off in this browser (WebGL disabled, see chrome://gpu). A simple view is shown.</p>
+        <div id="empty" class="empty">
+          <h3>Plug in your ROTEM.</h3>
+          <p>It appears here by itself when the hub is running. Otherwise press <b>Connect</b> and choose ROTEM.</p>
+          <p class="note" id="unsupported" hidden>This browser has no Web Serial. Use Chrome or Edge, or run the hub.</p>
+        </div>
+      </div>
+
+      <div class="card">
+                <div class="tab on" id="tab-overview">
+          <div class="hero" id="hero">
+            <div class="hero-ic" id="hero-ic">·</div>
+            <div>
+              <div class="hero-title" id="hero-title">Plug in your ROTEM</div>
+              <div class="hero-sub" id="hero-sub">Connect it with a USB-C cable. It appears here by itself.</div>
+            </div>
+          </div>
+
+          <h3>Get set up <span class="muted small-note" id="setup-count"></span></h3>
+          <ol class="steps" id="steps">
+            <li data-step="connect"><span class="st"></span><div><b>Connect the board</b><p>USB-C to this computer. Nothing to install.</p></div></li>
+            <li data-step="health"><span class="st"></span><div><b>Board checks pass</b><p>Sensors, power and data are checked automatically.</p></div></li>
+            <li data-step="gyro"><span class="st"></span><div><b>Teach it to sit still</b><p>Three seconds on the table, so it learns the gyro's drift.</p></div><button class="small go" data-go="cal-gyro">Do it</button></li>
+            <li data-step="mag"><span class="st"></span><div><b>Point it at north</b><p>Turn it around for thirty seconds then check the result away from magnetic interference.</p></div><button class="small go" data-go="cal-mag">Do it</button></li>
+          </ol>
+
+          <h3>Health <button id="selftest" class="small">Check again</button></h3>
+          <ul class="checks" id="checks"></ul>
+          <ul class="checks" id="tests" hidden></ul>
+          <p class="note">Tap any line to see what it means.</p>
+        </div>
+        <div class="tab" id="tab-can">
+<h3>CAN configuration</h3><p class="note">C1 high-rate CAN is not qualified. Confirm wiring and termination before starting the bus. Each board needs a unique node ID.</p>
+<label>Node ID <input id="can-node" type="number" min="0" max="63" value="0" /></label>
+<label>Bitrate <select id="can-kbps"><option>125</option><option>250</option><option>500</option><option>1000</option></select> kbit/s</label>
+<div class="actions"><button id="can-apply">Apply &amp; read back</button><button id="can-save">Save settings</button><button id="can-status">Read status</button><button id="can-stop">Stop bus</button></div>
+<pre id="can-result" aria-live="polite">Connect to inspect the bus.</pre>
+</div>
+<div class="tab" id="tab-firmware"><h3>Firmware &amp; recovery</h3><p>Experimental device software. Check the board revision and release manifest before writing firmware.</p><ol><li>Export your settings in Board settings.</li><li>Check the compatible release and SHA-256.</li><li>Use the documented DFU procedure with a backup and readback.</li></ol><a class="cta accent" href="https://docs.sapphify.com/rotem/firmware">Open update guide ↗</a><p class="note">Automatic browser flashing is not available. Entering DFU is not a completed update.</p></div>
+<div class="tab" id="tab-live">
+          <div class="chartlabel"><span>Acceleration</span><span class="unit">g</span><span class="legend"><i class="x"></i>x<i class="y"></i>y<i class="z"></i>z</span></div>
+          <canvas id="ch-acc" class="chart"></canvas>
+          <div class="chartlabel"><span>Rotation rate</span><span class="unit">°/s</span></div>
+          <canvas id="ch-gyro" class="chart"></canvas>
+          <div class="chartlabel"><span>Magnetic field</span><span class="unit">gauss</span></div>
+          <canvas id="ch-mag" class="chart"></canvas>
+          <table class="grid mono">
+            <thead><tr><th></th><th>x</th><th>y</th><th>z</th></tr></thead>
+            <tbody>
+              <tr><td>Accel g</td><td id="ax"></td><td id="ay"></td><td id="az"></td></tr>
+              <tr><td>Gyro °/s</td><td id="gx"></td><td id="gy"></td><td id="gz"></td></tr>
+              <tr><td>Mag G</td><td id="mx"></td><td id="my"></td><td id="mz"></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+                <div class="tab" id="tab-device">
+          <div class="banner" id="cfgstate">Read from the board on connect.</div>
+
+          <div class="simple-only">
+            <h3>What will ROTEM be used for?</h3>
+            <div class="presets" id="presets">
+              <button type="button" class="preset" data-preset="balanced"><b>Everyday</b><span>Tilt, turn and heading for most projects. The factory setting.</span></button>
+              <button type="button" class="preset" data-preset="robot"><b>Robot or vehicle</b><span>Fast spins and bumps without clipping: wide ranges.</span></button>
+              <button type="button" class="preset" data-preset="precise"><b>Slow and precise</b><span>Levelling, tables, antennas: the finest steps.</span></button>
+            </div>
+            <p class="note">A choice applies at once. Press <b>Save to board</b> to keep it after unplugging.</p>
+          </div>
+
+          <form id="cfgform" class="form">
+            <div class="adv">
+              <h3>Motion sensor</h3>
+              <label><span>Accelerometer range <i class="help" data-help="The largest push it can measure, in g (1 g = gravity). Wider ranges survive hard bumps; narrower ones see finer changes.">?</i></span><select name="accel_fs_g"><option value="2">±2 g</option><option value="4">±4 g</option><option value="8">±8 g</option><option value="16">±16 g</option><option value="32">±32 g</option></select></label>
+              <label><span>Gyroscope range <i class="help" data-help="The fastest turn it can measure, in degrees per second. A robot spinning in place can reach 1000 °/s or more.">?</i></span><select name="gyro_fs_dps"><option value="125">±125 °/s</option><option value="250">±250 °/s</option><option value="500">±500 °/s</option><option value="1000">±1000 °/s</option><option value="2000">±2000 °/s</option><option value="4000">±4000 °/s</option></select></label>
+              <label><span>Sensor data rate <i class="help" data-help="How often the sensor itself measures. Must be at least the USB stream rate.">?</i></span><select name="odr_hz"><option value="25">25 Hz</option><option value="50">50 Hz</option><option value="100">100 Hz</option><option value="200">200 Hz</option><option value="400">400 Hz</option><option value="800">800 Hz</option></select></label>
+            </div>
+            <h3>Compass</h3>
+            <label class="switch"><span>Magnetometer on <i class="help" data-help="Gives an absolute heading (north). Turn it off near motors or magnets, where it would be misled.">?</i></span><input type="checkbox" name="mag" /></label>
+            <label class="adv"><span>Measurement rate <i class="help" data-help="Compass readings per second. 20 is plenty for heading.">?</i></span><select name="mag_hz"><option value="10">10 Hz</option><option value="20">20 Hz</option><option value="50">50 Hz</option></select></label>
+            <div class="adv">
+              <h3>USB stream</h3>
+              <label><span>Stream rate <i class="help" data-help="Readings sent to this app per second.">?</i></span><select name="rate_hz"><option value="25">25 Hz</option><option value="50">50 Hz</option><option value="100">100 Hz</option><option value="200">200 Hz</option></select></label>
+              <h3>Lights at power-up</h3>
+              <div class="leds">
+                <span>SYS</span><label><input type="checkbox" data-led="0" />R</label><label><input type="checkbox" data-led="1" />G</label><label><input type="checkbox" data-led="2" />B</label>
+                <span>CAN</span><label><input type="checkbox" data-led="3" />R</label><label><input type="checkbox" data-led="4" />G</label><label><input type="checkbox" data-led="5" />B</label>
+              </div>
+              <p class="note">Rev C1 boards were assembled with both LEDs rotated, so colours will not match.</p>
+            </div>
+            <div class="buttons">
+              <button type="button" id="cfg-save" class="cta">Save to board</button>
+              <button type="button" id="cfg-apply" class="adv">Try without saving</button>
+              <button type="button" id="cfg-revert" class="ghost">Undo changes</button>
+              <button type="button" id="cfg-defaults" class="ghost adv">Factory defaults</button>
+            </div>
+          </form>
+
+          <h3>Settings file</h3>
+          <p class="note">Keep this board's settings and calibration in a file, or copy them onto another ROTEM.</p>
+          <div class="buttons">
+            <button type="button" id="cfg-export">Download</button>
+            <button type="button" id="cfg-import">Load from file…</button>
+            <input type="file" id="cfg-file" accept=".json,application/json" hidden />
+          </div>
+          <h3>About this board</h3>
+          <table class="kv mono" id="info"></table>
+          <div class="adv">
+            <h3>Maintenance</h3>
+            <button id="boot" class="danger">Reboot into update mode</button>
+          </div>
+        </div>
+        <div class="tab" id="tab-filter">
+          <p class="note">Orientation is worked out here, in the app, from the raw sensor stream.</p>
+          <div class="form">
+            <label>Orientation from<select id="fsource"><option value="board">The board (what the robot gets)</option><option value="app">This app (to compare)</option></select></label>
+            <label>App algorithm<select id="algo"><option value="ekf">Kalman filter</option><option value="madgwick">Madgwick</option></select></label>
+            <label class="switch">Magnetometer for heading<input type="checkbox" id="usemag" /></label>
+            <p class="note" id="magnote">Off until the magnetometer is calibrated and its axes are checked against the motion sensor. Without it heading is relative and drifts slowly.</p>
+            <div id="ekfparams">
+              <label class="switch">Learn gyro drift while still<input type="checkbox" id="zerorate" /></label>
+              <p class="note">When the board rests, the filter knows it is not turning and measures the gyro's drift on all three axes, so heading holds. On by default.</p>
+              <h3>Kalman tuning</h3>
+              <label>Gyro noise<input type="range" id="k-gyro" min="0.0005" max="0.05" step="0.0005" /><output id="k-gyro-v"></output></label>
+              <label>Bias drift<input type="range" id="k-bias" min="0.00001" max="0.002" step="0.00001" /><output id="k-bias-v"></output></label>
+              <label>Accel noise<input type="range" id="k-acc" min="0.005" max="0.3" step="0.005" /><output id="k-acc-v"></output></label>
+              <label>Heading noise<input type="range" id="k-head" min="0.02" max="1" step="0.01" /><output id="k-head-v"></output></label>
+              <div class="buttons"><button type="button" id="f-reset">Restart filter</button><button type="button" id="k-reset" class="ghost">Default tuning</button></div>
+              <table class="kv mono">
+                <tr><td>Gyro bias, estimated</td><td id="k-bias-est">–</td></tr>
+                <tr><td>Attitude 1σ</td><td id="k-sigma">–</td></tr>
+              </table>
+            </div>
+            <div id="madparams" hidden>
+              <h3>Madgwick tuning</h3>
+              <label>Gain β<input type="range" id="beta" min="0.01" max="0.5" step="0.01" /><output id="beta-v"></output></label>
+            </div>
+          </div>
+        </div>
+
+                <div class="tab" id="tab-cal">
+          <p class="note lead">Two short steps make ROTEM exact. Each result is stored on the board, so you do them once.</p>
+
+          <section class="wiz" id="wiz-gyro">
+            <div class="wiz-head"><span class="wiz-n">1</span><div><b>Sit still</b><p>Put the board flat on a table that nobody is touching. Press start and don't touch it for three seconds.</p></div><span class="wiz-state" id="gyro-state"></span></div>
+            <div class="wiz-body">
+              <div class="ring" id="cal-gyro-ring"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="ring-bg"/><circle cx="20" cy="20" r="17" class="ring-fg" id="gyro-ring-fg"/></svg><span id="gyro-ring-t">3</span></div>
+              <div class="wiz-res">
+                <div class="buttons"><button id="cal-gyro" class="cta">Start</button><button id="cal-gyro-save" class="cta accent" disabled>Save to board</button></div>
+                <table class="kv mono adv"><tr><td>Drift measured, °/s</td><td id="cal-gyro-v">–</td></tr></table>
+                <p class="note" id="gyro-msg"></p>
+              </div>
+            </div>
+          </section>
+
+          <section class="wiz" id="wiz-mag">
+            <div class="wiz-head"><span class="wiz-n">2</span><div><b>Turn it around</b><p>Hold it away from the laptop, metal and magnets (an arm's length on the cable). Press start, then slowly roll and turn it so every side faces down once, for thirty seconds.</p></div><span class="wiz-state" id="mag-state"></span></div>
+            <div class="wiz-body">
+              <div class="cover" id="cal-mag-grid" title="Each cell lights up when the board has pointed that way"></div>
+              <div class="wiz-res">
+                <div class="buttons"><button id="cal-mag" class="cta">Start</button><button id="cal-mag-save" class="cta accent" disabled>Save to board</button></div>
+                <div class="progress"><div id="cal-mag-bar"></div></div>
+                <p class="note" id="mag-msg">Fill as many cells as you can.</p>
+                <table class="kv mono">
+                  <tr><td>Directions covered</td><td id="cal-mag-cov">–</td></tr>
+                  <tr><td>Field strength</td><td id="cal-mag-field">–</td></tr>
+                  <tr class="adv"><td>Offset, counts</td><td id="cal-mag-off">–</td></tr>
+                  <tr class="adv"><td>Scale</td><td id="cal-mag-scale">–</td></tr>
+                  <tr class="adv"><td>Axes, checked by rotation</td><td id="cal-mag-axes">–</td></tr>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="tab" id="tab-console">
+          <pre id="log"></pre>
+          <form id="cmdform" class="cmd"><input id="cmd" placeholder="GET" autocomplete="off" spellcheck="false" /><button>Send</button></form>
+          <p class="note">Commands: 03_documentation/interfaces.md.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="pop" id="pop" hidden></div>
+  <script>import '../main.ts';</script>
+</body>
+</html>

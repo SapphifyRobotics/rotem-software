@@ -1,0 +1,14 @@
+{
+  "name": "rotem-studio",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    {
+      "pattern": "studio.sapphify.com",
+      "custom_domain": true
+    }
+  ]
+}

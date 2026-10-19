@@ -1,0 +1,5 @@
+{
+  "stm32u5-hal": "1fe66fe15d7c6fd6ee8f4390c7dc6c48c6224a35",
+  "tinyusb": "../usb_echo/vendor/sources.json",
+  "cmsis": "../led_bringup/vendor/sources.json"
+}
