@@ -90,6 +90,9 @@ export function firmwarePanel(getConnection: () => { info: Record<string, string
     await link.send("BOOT");
     await new Promise(r => setTimeout(r, 800));
     await link.close();
+    // Explicit close suppresses HubLink's socket callback; clear the app connection
+    // as well so reconnect never targets a closed WebSocket after manifestation.
+    link.onClose("Released connection for firmware update");
     el("fw-phase").textContent = "Select the same board in DFU";
     say("Select STM32 BOOTLOADER below. Studio checks its identity against the connected ROTEM before reading or writing.");
   });
