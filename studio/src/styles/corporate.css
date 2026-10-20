@@ -47,3 +47,16 @@ body.dark {
  --glass:color-mix(in srgb,var(--sf-surface) 92%,transparent);
 }
 body.dark .nav button.on, body.dark .modes button.on {background:var(--sf-accent-tint);color:var(--sf-ink)}
+
+/* Hidden state must win over component display rules (chips and panels). */
+[hidden] { display: none !important; }
+/* Reserve space for instruments and controls instead of covering the model. */
+#board { inset: 110px 12px 100px; }
+.stage { min-height: 570px; }
+.stage-head > div:first-child { min-width: 0; }
+.instruments { flex-shrink: 0; }
+.glnote { bottom: 58px; max-width: calc(100% - 32px); font-size: 11px; }
+@media (max-width: 800px) {
+  #board { inset: 100px 8px 110px; }
+  .stage { min-height: 470px; }
+}

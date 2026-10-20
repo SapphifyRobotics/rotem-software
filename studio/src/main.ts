@@ -452,6 +452,7 @@ function frame() {
           .join(", ") + " °";
     }
   } else {
+    $("stillchip").hidden = true;
     drawHorizon($<HTMLCanvasElement>("horizon"), 0, 0);
     drawCompass($<HTMLCanvasElement>("compass"), 0);
   }

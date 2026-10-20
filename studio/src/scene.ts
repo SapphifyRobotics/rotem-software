@@ -16,18 +16,9 @@ export class BoardView {
   private current = new THREE.Quaternion();
   loaded: Promise<void> = Promise.resolve();
   constructor(host: HTMLElement) {
-    try {
-      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    } catch {
-      const img = document.createElement("img");
-      img.src = "/models/fallback.webp";
-      img.alt =
-        "ROTEM enclosure illustration. Interactive orientation requires WebGL; numeric readings remain available.";
-      img.style.cssText = "width:100%;height:100%;object-fit:contain";
-      host.append(img);
-      host.dataset.modelError = "true";
-      return;
-    }
+    // Let makeView select the live Canvas fallback when WebGL is unavailable.
+    // Do not swallow this failure and replace orientation with a static photograph.
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     host.appendChild(this.renderer.domElement);
