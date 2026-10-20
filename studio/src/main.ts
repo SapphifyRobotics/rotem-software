@@ -115,7 +115,10 @@ const savePrefs = () => {
 // ---------- 3D view, with a 2D fallback when WebGL is off
 function makeView(): BoardView | FlatBoardView {
   try {
-    return new BoardView($("board"));
+    return new BoardView($("board"), (reason) => {
+      $("render-message").textContent = reason;
+      $("nogl").hidden = false;
+    });
   } catch (e) {
     console.warn("WebGL unavailable, 2D view", e);
     $("board").innerHTML = "";

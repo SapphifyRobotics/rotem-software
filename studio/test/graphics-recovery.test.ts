@@ -1,0 +1,11 @@
+import {it,expect,vi,beforeEach} from 'vitest';
+const mocks=vi.hoisted(()=>({lost:null as null|((e:any)=>void),load:vi.fn(),orientation:vi.fn(),zero:vi.fn(),mode:vi.fn()}));
+vi.mock('three',async original=>({...await original<typeof import('three')>(),WebGLRenderer:class{domElement={addEventListener:(_n:string,f:any)=>mocks.lost=f};setPixelRatio(){}setSize(){}render(){}}}));
+vi.mock('three/examples/jsm/controls/OrbitControls.js',()=>({OrbitControls:class{target={set(){}};dispose(){}update(){}}}));
+vi.mock('three/examples/jsm/loaders/GLTFLoader.js',()=>({GLTFLoader:class{loadAsync=mocks.load}}));
+vi.mock('../src/flatview',()=>({FlatBoardView:class{setMode=mocks.mode;setOrientation=mocks.orientation;zero=mocks.zero;unzero(){}}}));
+import {BoardView} from '../src/scene';
+beforeEach(()=>{vi.clearAllMocks();vi.stubGlobal('document',{hidden:false});vi.stubGlobal('devicePixelRatio',1);vi.stubGlobal('matchMedia',()=>({matches:false}));vi.stubGlobal('ResizeObserver',class{observe(){}});vi.stubGlobal('IntersectionObserver',class{observe(){}});vi.stubGlobal('requestAnimationFrame',()=>0);mocks.load.mockImplementation(()=>new Promise(()=>{}));});
+const host=()=>({appendChild:vi.fn(),replaceChildren:vi.fn(),clientWidth:600,clientHeight:400}) as unknown as HTMLElement;
+it('preserves live orientation, reference and mode after context loss',()=>{const h=host(),notice=vi.fn(),v=new BoardView(h,notice);v.setOrientation([1,0,0,0]);v.zero();v.setMode('enclosure');v.setOrientation([.707,0,0,.707]);mocks.lost!({preventDefault:vi.fn()});expect(mocks.zero).toHaveBeenCalledOnce();expect(mocks.mode).toHaveBeenLastCalledWith('enclosure');expect(mocks.orientation).toHaveBeenLastCalledWith([.707,0,0,.707]);expect(notice).toHaveBeenCalledOnce();v.setOrientation([1,0,0,0]);expect(mocks.orientation).toHaveBeenLastCalledWith([1,0,0,0]);});
+it('uses live fallback when the model download fails',async()=>{mocks.load.mockRejectedValue(new Error('offline'));const notice=vi.fn();const v=new BoardView(host(),notice);await v.loaded;expect(notice).toHaveBeenCalledWith(expect.stringContaining('could not load'));});

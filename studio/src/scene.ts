@@ -2,9 +2,13 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { sensorToDisplayQuaternion, CAD_TO_DISPLAY_X } from "./orientation";
+import { FlatBoardView } from "./flatview";
 export type ViewMode = "board" | "plugs" | "enclosure";
 /** Public display geometry only. Sensor coordinates: X right, Y toward USB, Z up. */
 export class BoardView {
+  private fallback?: FlatBoardView;
+  private sensorQ = [1,0,0,0];
+  private referenceQ?: number[];
   private renderer!: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
   private camera = new THREE.PerspectiveCamera(35, 1, 0.01, 100);
@@ -15,10 +19,24 @@ export class BoardView {
   private tare = new THREE.Quaternion();
   private current = new THREE.Quaternion();
   loaded: Promise<void> = Promise.resolve();
-  constructor(host: HTMLElement) {
+  constructor(host: HTMLElement, onFallback: (reason: string) => void = () => {}) {
     // Let makeView select the live Canvas fallback when WebGL is unavailable.
     // Do not swallow this failure and replace orientation with a static photograph.
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const fallback = (reason: string) => {
+      if (this.fallback) return;
+      this.controls?.dispose();
+      host.replaceChildren();
+      this.fallback = new FlatBoardView(host);
+      this.fallback.setMode(this.mode);
+      if (this.referenceQ) { this.fallback.setOrientation(this.referenceQ); this.fallback.zero(); }
+      this.fallback.setOrientation(this.sensorQ);
+      onFallback(reason);
+    };
+    this.renderer.domElement.addEventListener("webglcontextlost", event => {
+      event.preventDefault();
+      fallback("Graphics connection lost. Live compatibility view is active.");
+    });
     this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     host.appendChild(this.renderer.domElement);
@@ -60,7 +78,7 @@ export class BoardView {
         this.setMode(this.mode);
       })
       .catch(() => {
-        host.dataset.modelError = "true";
+        fallback("The detailed model could not load. Live compatibility view is active.");
       });
     const resize = () => {
       const w = host.clientWidth,
@@ -76,6 +94,7 @@ export class BoardView {
       host,
     );
     const loop = () => {
+      if (this.fallback) return;
       if (visible && !document.hidden) {
         this.controls?.update();
         this.renderer.render(this.scene, this.camera);
@@ -86,6 +105,7 @@ export class BoardView {
   }
   setMode(mode: ViewMode) {
     this.mode = mode;
+    this.fallback?.setMode(mode);
     for (const [name, model] of this.models)
       model.visible =
         name === (mode === "enclosure" ? "assembled" : "interior");
@@ -96,14 +116,20 @@ export class BoardView {
   setOrientation(q: number[]) {
     const display = sensorToDisplayQuaternion(q);
     if (!display) return;
+    this.sensorQ = [...q];
+    this.fallback?.setOrientation(q);
     this.current.set(...display);
     this.holder.quaternion.copy(this.tare).multiply(this.current);
   }
   zero() {
+    this.referenceQ = [...this.sensorQ];
+    this.fallback?.zero();
     this.tare.copy(this.current).invert();
     this.holder.quaternion.identity();
   }
   unzero() {
+    this.referenceQ = undefined;
+    this.fallback?.unzero();
     this.tare.identity();
     this.holder.quaternion.copy(this.current);
   }

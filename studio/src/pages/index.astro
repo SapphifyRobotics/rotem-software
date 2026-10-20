@@ -83,7 +83,11 @@ const tabs = [
           <button id="unzero" class="ghost">Clear reference</button>
           <button id="camreset" class="ghost">Reset view</button>
         </div>
-        <p id="nogl" class="glnote" hidden>3D is off in this browser (WebGL disabled, see chrome://gpu). A simple view is shown.</p>
+        <aside id="nogl" class="render-notice" role="status" hidden>
+          <strong>Compatibility view</strong>
+          <span id="render-message">WebGL is unavailable. A simplified model still follows live sensor orientation.</span>
+          <a href="https://docs.sapphify.com/rotem/troubleshooting/#3d-model-is-missing">Restore detailed 3D ↗</a>
+        </aside>
         <div id="empty" class="empty">
           <h3>Plug in your ROTEM.</h3>
           <p>Press <b>Connect</b> and choose ROTEM.</p>

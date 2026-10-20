@@ -17,3 +17,7 @@ Not flashed or physically qualified. Higher-rate CAN, persistence, recovery and 
 - Short stationary recordings and manual movement/return-to-rest passed; long-run drift cause remains unresolved. No new CAN or absolute heading qualification.
 - Studio now bases heading conversion and magnetic-mode text on the selected fusion source, rather than the app filter preference when displaying board fusion.
 - Bench details: https://docs.sapphify.com/rotem/releases/#stationary-bench-check-october-19-2026 .
+
+## 2026-10-19 graphics recovery
+
+Studio falls back to live Canvas rendering when WebGL is unavailable, the graphics context is lost, or model loading fails. A visible compatibility notice links to recovery guidance. Orientation, view mode and reference are retained during a runtime switch. Detailed GPU rendering remains dependent on the browser and device.
