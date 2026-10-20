@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — Studio firmware updater
+
+- Display installed firmware version, source build and hardware revision in Firmware.
+- Check GitHub releases against a reviewed same-origin image catalog; stable by default, experimental by explicit selection.
+- Add experimental WebUSB DfuSe workflow with same-device identity checks, application backup, bounded page writes, byte readback and reconnect verification.
+- Publish the existing clean 625e31e bench image as v0.6.4-bench.1 without replacing the earlier release.
+- Browser transport has automated checks, not physical qualification; the local registered flashing workflow remains the tested path.
+
+
 ## Firmware 0.6.4 / Studio 0.9.0 — experimental, 2026-10-19
 
 - Extract original software from the private product workspace without its history or unit records.

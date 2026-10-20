@@ -1,0 +1,10 @@
+/* Firmware panel uses the same tokens and controls as the rest of Studio. */
+#tab-firmware .actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:16px 0; }
+#tab-firmware a { color:var(--accent); text-underline-offset:3px; }
+#tab-firmware #fw-current { font-weight:600; }
+#tab-firmware #fw-release { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; font-size:13px; line-height:1.65; padding:16px; background:var(--panel); border:1px solid var(--line); border-radius:12px; }
+#tab-firmware #fw-message { padding:12px 16px; border-left:3px solid var(--accent); background:var(--panel); }
+#tab-firmware progress { width:100%; accent-color:var(--accent); }
+#tab-firmware button:focus-visible, #tab-firmware input:focus-visible, #tab-firmware a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+#tab-firmware label { display:flex; gap:8px; align-items:baseline; }
+@media(max-width:600px) { #tab-firmware .actions button { min-height:44px; flex:1 1 100%; } }

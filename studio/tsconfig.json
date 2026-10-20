@@ -10,7 +10,8 @@
     ],
     "types": [
       "w3c-web-serial",
-      "astro/client"
+      "astro/client",
+      "w3c-web-usb"
     ],
     "strict": true,
     "noUnusedLocals": true,

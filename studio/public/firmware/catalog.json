@@ -1,0 +1,16 @@
+[
+  {
+    "version": "0.6.4",
+    "commit": "625e31e",
+    "sha256": "b478db44aabd63a82df187114de41a28558999b148d6260868598ca0201d8d67",
+    "dirty": 0,
+    "hardware_revisions": [
+      "C1"
+    ],
+    "physical_tests": "One C1 unit: local DFU write/readback, short stationary and motion tests, self-tests and saved-settings restart passed. CAN 1 Mbps, long-duration, absolute heading and browser flashing qualification remain open.",
+    "tag": "v0.6.4-bench.1",
+    "channel": "experimental",
+    "bytes": 47148,
+    "image": "/firmware/b478db44aabd63a82df187114de41a28558999b148d6260868598ca0201d8d67.bin"
+  }
+]

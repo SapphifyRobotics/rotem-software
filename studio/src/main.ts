@@ -1,3 +1,5 @@
+import { firmwarePanel } from "./firmware/controller";
+let firmwareUi: ReturnType<typeof firmwarePanel> | undefined;
 import { Commands } from "./commands";
 import { HubLink, SerialLink, type Link } from "./link";
 import {
@@ -698,6 +700,7 @@ function renderTests() {
 }
 
 function renderDevice() {
+  firmwareUi?.refresh();
   const on = boardPresent();
   document.body.classList.toggle("connected", on);
   $("linkdot").className = "dot" + (on ? " on" : "");
@@ -720,6 +723,7 @@ function renderDevice() {
 }
 
 function renderInfo() {
+  firmwareUi?.refresh();
   if (!info) return;
   const rows: [string, string][] = [
     ["Firmware", info.fw],
@@ -1558,3 +1562,5 @@ $("can-start").onclick = () =>
       (s) => s.startsWith("CAN "),
     );
   });
+
+firmwareUi = firmwarePanel(() => ({ info, link: link && (link.kind !== "hub" || hubDevice) ? link : null }));

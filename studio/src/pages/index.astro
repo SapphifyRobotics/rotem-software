@@ -3,6 +3,7 @@ import '@fontsource-variable/dm-sans';
 import '@fontsource-variable/space-grotesk';
 import '../styles/studio.css';
 import '../styles/corporate.css';
+import '../styles/firmware.css';
 import ReferenceGuide from '../components/ReferenceGuide.astro';
 
 const tabs = [
@@ -125,7 +126,21 @@ const tabs = [
 <div class="actions"><button id="can-apply">Apply &amp; read back</button><button id="can-save">Save settings</button><button id="can-status">Read status</button><button id="can-start">Start bus</button><button id="can-stop">Stop bus</button></div>
 <pre id="can-result" aria-live="polite">Connect to inspect the bus.</pre>
 </div>
-<div class="tab" id="tab-firmware"><h3>Firmware &amp; recovery</h3><p>Experimental device software. Check the board revision and release manifest before writing firmware.</p><ol><li>Export your settings in Board settings.</li><li>Check the compatible release and SHA-256.</li><li>Use the documented DFU procedure with a backup and readback.</li></ol><a class="cta accent" href="https://docs.sapphify.com/rotem/firmware">Open update guide ↗</a><p class="note">Automatic browser flashing is not available. Entering DFU is not a completed update.</p></div>
+<div class="tab" id="tab-firmware">
+<h3>Firmware updates</h3>
+<p id="fw-current">Connect ROTEM to read its firmware.</p>
+<p>Read the installed build, check published releases, and update over USB. Browser flashing is experimental. Keep your settings export and application backup.</p>
+<label class="note"><input type="checkbox" id="fw-experimental" /> Include experimental releases (not hardware-qualified)</label>
+<div class="actions"><button id="fw-check">Check GitHub releases</button><a href="https://github.com/SapphifyRobotics/rotem-software/releases" target="_blank" rel="noopener">Release notes ↗</a></div>
+<pre id="fw-release">No release selected.</pre>
+<h4 id="fw-phase">Prepare your update</h4>
+<p>1. Export settings in Board settings. 2. Prepare the update. 3. Select the same board in DFU, then write and verify. 4. Reconnect to confirm its version.</p>
+<div class="actions"><button id="fw-prepare" disabled>Prepare update</button><button id="fw-pair" disabled>Select DFU and back up</button><button id="fw-flash" disabled>Write and verify</button><button id="fw-reset">End update session</button></div>
+<progress id="fw-progress" max="1" value="0" hidden aria-label="Firmware operation progress"></progress>
+<p id="fw-message" role="status" aria-live="polite">No device is changed when checking releases.</p>
+<a class="cta accent" href="https://docs.sapphify.com/rotem/firmware/">Update and recovery guide ↗</a>
+<p class="note">A successful download or entering DFU is not a completed update. USB permission and driver support are required. Calibration and settings must be checked after installation.</p>
+</div>
 <div class="tab" id="tab-live">
           <div class="chartlabel"><span>Acceleration</span><span class="unit">g</span><span class="legend"><i class="x"></i>x<i class="y"></i>y<i class="z"></i>z</span></div>
           <canvas id="ch-acc" class="chart"></canvas>
