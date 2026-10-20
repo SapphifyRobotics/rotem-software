@@ -10,3 +10,10 @@
 - Preserve configuration format; settings require explicit Save and reboot verification.
 
 Not flashed or physically qualified. Higher-rate CAN, persistence, recovery and Systemcore remain open bench gates.
+
+## 2026-10-19 bench follow-up
+
+- Firmware 0.6.4 clean build 625e31e flashed and verified on one C1 unit; settings retained, gyro bias and magnetic coefficients saved/read back and checked after ROM-mediated restart.
+- Short stationary recordings and manual movement/return-to-rest passed; long-run drift cause remains unresolved. No new CAN or absolute heading qualification.
+- Studio now bases heading conversion and magnetic-mode text on the selected fusion source, rather than the app filter preference when displaying board fusion.
+- Bench details: https://docs.sapphify.com/rotem/releases/#stationary-bench-check-october-19-2026 .

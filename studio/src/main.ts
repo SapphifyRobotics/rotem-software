@@ -159,6 +159,7 @@ async function verifiedSend(s: string) {
 let boardFusion: Sample["board"] | null = null;
 /** Show the board's own filter (what a robot gets on CAN) unless the viewer picked the app's filter to compare. */
 const useBoard = () => !!boardFusion && prefs.source === "board";
+const usesMagneticHeading = () => useBoard() ? !!(boardFusion!.flags & 4) : useMagNow();
 let hubDevice: string | null = null;
 let hubBusy = false;
 let info: Record<string, string> | null = null;
@@ -407,7 +408,7 @@ function frame() {
     $("pitch").textContent = f3(p, 1) + "°";
     // With the magnetometer, world +x is magnetic north and yaw is the board's x axis from it,
     // counter-clockwise; shown as the compass bearing of the USB edge (board +y), clockwise.
-    const hdg = useMagNow() ? 270 - y : y;
+    const hdg = usesMagneticHeading() ? 270 - y : y;
     $("yaw").textContent = (((hdg % 360) + 360) % 360).toFixed(1) + "°";
     if (useBoard()) {
       const fl = boardFusion!.flags;
@@ -429,7 +430,7 @@ function frame() {
         : "relative, drifts slowly";
     }
     drawHorizon($<HTMLCanvasElement>("horizon"), r, p);
-    drawCompass($<HTMLCanvasElement>("compass"), useMagNow() ? 270 - y : y);
+    drawCompass($<HTMLCanvasElement>("compass"), usesMagneticHeading() ? 270 - y : y);
     if (prefs.tab === "live") {
       charts.acc.draw();
       charts.gyro.draw();
@@ -819,7 +820,7 @@ function renderGuide(list: Check[]) {
       "ok",
       "✓",
       "Everything looks good",
-      `Tilted ${Math.hypot(r0, p0).toFixed(1)}° from level${useMagNow() ? ", heading locked to magnetic north" : ""}. Move the board and watch it follow.`,
+      `Tilted ${Math.hypot(r0, p0).toFixed(1)}° from level${usesMagneticHeading() ? ", magnetic heading enabled" : ", relative heading"}. Move the board and watch it follow.`,
     );
   }
 }
